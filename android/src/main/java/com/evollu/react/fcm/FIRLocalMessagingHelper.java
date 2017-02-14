@@ -78,8 +78,8 @@ public class FIRLocalMessagingHelper {
             }
 
             NotificationCompat.Builder notification = new NotificationCompat.Builder(mContext)
-                    .setContentTitle(title)
-                    .setContentText(bundle.getString("body"))
+                    .setContentTitle(title + "artı title")
+                    .setContentText(bundle.getString("body") + "artı body")
                     .setTicker(bundle.getString("ticker"))
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                     .setAutoCancel(bundle.getBoolean("auto_cancel", true))
