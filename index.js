@@ -1,27 +1,9 @@
 import {NativeModules, DeviceEventEmitter, Platform} from 'react-native';
 
-export const FCMEvent = {
-  RefreshToken: 'FCMTokenRefreshed',
-  Notification: 'FCMNotificationReceived'
-}
-
-export const RemoteNotificationResult = {
-  NewData: 'UIBackgroundFetchResultNewData',
-  NoData: 'UIBackgroundFetchResultNoData',
-  ResultFailed: 'UIBackgroundFetchResultFailed'
-}
-
-export const WillPresentNotificationResult = {
-  All: 'UNNotificationPresentationOptionAll',
-  None: 'UNNotificationPresentationOptionNone'
-}
-
-export const NotificationType = {
-  Remote: 'remote_notification',
-  NotificationResponse: 'notification_response',
-  WillPresent: 'will_present_notification',
-  Local: 'local_notification'
-}
+const eventsMap = {
+    refreshToken: 'FCMTokenRefreshed',
+    notification: 'FCMNotificationReceived'
+};
 
 const RNFIRMessaging = NativeModules.RNFIRMessaging;
 
@@ -87,57 +69,16 @@ FCM.getBadgeNumber = () => {
     return RNFIRMessaging.getBadgeNumber();
 }
 
-
-function finish(result){
-  if(Platform.OS !== 'ios'){
-    return;
-  }
-  if(!this._finishCalled && this._completionHandlerId){
-    this._finishCalled = true;
-    switch(this._notificationType){
-      case NotificationType.Remote:
-        result = result || RemoteNotificationResult.NoData;
-        if(!Object.values(RemoteNotificationResult).includes(result)){
-          throw new Error(`Invalid RemoteNotificationResult, use import {RemoteNotificationResult} from 'react-native-fcm' to avoid typo`);
-        }
-        RNFIRMessaging.finishRemoteNotification(this._completionHandlerId, result);
-        return;
-      case NotificationType.NotificationResponse:
-        RNFIRMessaging.finishNotificationResponse(this._completionHandlerId);
-        return;
-      case NotificationType.WillPresent:
-        result = result || (this.show_in_foreground ? WillPresentNotificationResult.All : WillPresentNotificationResult.None);
-        if(!Object.values(WillPresentNotificationResult).includes(result)){
-          throw new Error(`Invalid WillPresentNotificationResult, make sure you use import {WillPresentNotificationResult} from 'react-native-fcm' to avoid typo`);
-        }
-        RNFIRMessaging.finishWillPresentNotification(this._completionHandlerId, result);
-        return;
-      default:
-        return;
-    }
-  }
-}
-
 FCM.on = (event, callback) => {
-    if (!Object.values(FCMEvent).includes(event)) {
-        throw new Error(`Invalid FCM event subscription, use import {FCMEvent} from 'react-native-fcm' to avoid typo`);
-    };
-
-    if(event === FCMEvent.Notification){
-      return DeviceEventEmitter.addListener(event, async(data)=>{
-        data.finish = finish;
-        try{
-          await callback(data);
-        } catch(err){
-          console.error('Notification handler err', err)
-          throw err;
-        }
-        if(!data._finishCalled){
-          data.finish();
-        }
-      })
+    const nativeEvent = eventsMap[event];
+    if (!nativeEvent) {
+        throw new Error('FCM event must be "refreshToken" or "notification"');
     }
-    return DeviceEventEmitter.addListener(event, callback);
+    const listener = DeviceEventEmitter.addListener(nativeEvent, callback);
+
+    return function remove() {
+        listener.remove();
+    };
 };
 
 FCM.subscribeToTopic = (topic) => {
@@ -152,4 +93,4 @@ FCM.send = (senderId, payload) => {
     RNFIRMessaging.send(senderId, payload);
 };
 
-export default FCM;
+module.exports = FCM;

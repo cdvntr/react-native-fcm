@@ -200,7 +200,7 @@ public class FIRMessagingModule extends ReactContextBaseJavaModule implements Li
                 if (message.getNotification() != null) {
                     Notification notification = message.getNotification();
                     fcmData.putString("title", notification.getTitle());
-                    fcmData.putString("body", notification.getBody() + "ol lan");
+                    fcmData.putString("body", notification.getBody());
                     fcmData.putString("color", notification.getColor());
                     fcmData.putString("icon", notification.getIcon());
                     fcmData.putString("tag", notification.getTag());

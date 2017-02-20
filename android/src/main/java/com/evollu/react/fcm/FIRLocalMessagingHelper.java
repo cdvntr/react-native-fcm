@@ -78,8 +78,8 @@ public class FIRLocalMessagingHelper {
             }
 
             NotificationCompat.Builder notification = new NotificationCompat.Builder(mContext)
-                    .setContentTitle(title + "artı title")
-                    .setContentText(bundle.getString("body") + "artı body")
+                    .setContentTitle(title)
+                    .setContentText(bundle.getString("body"))
                     .setTicker(bundle.getString("ticker"))
                     .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                     .setAutoCancel(bundle.getBoolean("auto_cancel", true))
@@ -112,7 +112,7 @@ public class FIRLocalMessagingHelper {
             notification.setSmallIcon(smallIconResId);
 
             //large icon
-            String largeIcon = bundle.getString("large_icon");
+            String largeIcon = bundle.getString("large-icon");
             if(largeIcon != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
                 if (largeIcon.startsWith("http://") || largeIcon.startsWith("https://")) {
                     Bitmap bitmap = getBitmapFromURL(largeIcon);
