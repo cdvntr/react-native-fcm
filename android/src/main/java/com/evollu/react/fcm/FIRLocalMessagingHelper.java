@@ -20,6 +20,7 @@ import android.util.Patterns;
 import android.content.SharedPreferences;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.io.IOException;
