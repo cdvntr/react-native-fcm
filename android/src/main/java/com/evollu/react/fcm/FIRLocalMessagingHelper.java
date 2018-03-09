@@ -55,7 +55,7 @@ public class FIRLocalMessagingHelper {
 
     public void sendNotification(Bundle bundle) {
         try {
-            Class intentClass = getMainActivityClass();
+            String intentClass = getMainActivityClass();
             if (intentClass == null) {
                 return;
             }
