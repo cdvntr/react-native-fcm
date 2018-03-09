@@ -42,16 +42,11 @@ public class FIRLocalMessagingHelper {
         sharedPreferences = (SharedPreferences) mContext.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public Class getMainActivityClass() {
+    public String getMainActivityClassName() {
         String packageName = mContext.getPackageName();
         Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(packageName);
         String className = launchIntent.getComponent().getClassName();
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return className;
     }
 
     private AlarmManager getAlarmManager() {
@@ -211,8 +206,8 @@ public class FIRLocalMessagingHelper {
     }
 
     public void sendNotificationScheduled(Bundle bundle) {
-        Class intentClass = getMainActivityClass();
-        if (intentClass == null) {
+        String intentClassName = getMainActivityClassName();
+        if (intentClassName == null) {
             return;
         }
 
@@ -222,7 +217,10 @@ public class FIRLocalMessagingHelper {
             return;
         }
 
-        Long fireDate = bundle.getLong("fire_date", Math.round(bundle.getDouble("fire_date")));
+        long fireDate = Math.round(bundle.getDouble("fire_date"));
+        if(fireDate == 0){
+            fireDate = Math.round(bundle.getLong("fire_date"));
+        }
         if (fireDate == 0) {
             Log.e(TAG, "failed to schedule notification because fire date is missing");
             return;
@@ -332,7 +330,7 @@ public class FIRLocalMessagingHelper {
             return null;
         }
     }
-    
+
     public void brintToForeground()
     {
         Log.d("Bring to front", "brintToForeground: çalışıyor");
