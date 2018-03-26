@@ -19,6 +19,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.content.SharedPreferences;
 import android.app.KeyguardManager;
+import android.app.KeyguardLock;
 
 import org.json.JSONException;
 import org.json.JSONObject;
