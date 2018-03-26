@@ -354,6 +354,11 @@ public class FIRLocalMessagingHelper {
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
+         mContext.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                                        mContext.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                                        mContext.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+                                        mContext.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+
         mContext.startActivity(launchIntent);
     }
 }
