@@ -19,7 +19,6 @@ import android.util.Log;
 import android.util.Patterns;
 import android.content.SharedPreferences;
 import android.app.KeyguardManager;
-import android.app.KeyguardLock;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -357,7 +356,7 @@ public class FIRLocalMessagingHelper {
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        KeyguardLock kgl = kgm.newKeyguardLock();
+        KeyguardManager.KeyguardLock kgl = kgm.newKeyguardLock();
 
         if (kgm.inKeyguardRestrictedInputMode())
             kgl.disableKeyguard();
