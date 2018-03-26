@@ -89,7 +89,7 @@ public class MessagingService extends FirebaseMessagingService {
                     FIRLocalMessagingHelper helper = new FIRLocalMessagingHelper(this.getApplication());
                     Log.d(TAG, "buildLocalNotification: type = call");
                     //bring to foreground
-                    helper.brintToForeground();
+                    helper.bringToForeground();
                 }
 
                 String customNotification = data.get("custom_notification");
