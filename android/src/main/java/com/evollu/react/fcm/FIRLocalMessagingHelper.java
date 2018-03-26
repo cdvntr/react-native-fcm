@@ -349,11 +349,7 @@ public class FIRLocalMessagingHelper {
         Log.d("Bring to front", "bringToForeground: çalışıyor");
 
         Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage("com.aloaloortak");
-        launchIntent.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
+        launchIntent.putExtra("isCall",true);
 
         mContext.startActivity(launchIntent);
     }
