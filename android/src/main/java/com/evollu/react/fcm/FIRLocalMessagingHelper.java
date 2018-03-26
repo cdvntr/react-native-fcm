@@ -355,7 +355,7 @@ public class FIRLocalMessagingHelper {
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        KeyguardManager kgm = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
         KeyguardManager.KeyguardLock kgl = kgm.newKeyguardLock();
 
         if (kgm.inKeyguardRestrictedInputMode())
