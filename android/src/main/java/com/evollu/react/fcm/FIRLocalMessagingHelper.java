@@ -18,6 +18,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.Patterns;
 import android.content.SharedPreferences;
+import android.app.KeyguardManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
