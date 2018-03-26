@@ -18,8 +18,10 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.Patterns;
 import android.content.SharedPreferences;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.view.WindowManager;
 
 import java.util.ArrayList;
@@ -50,16 +52,16 @@ public class FIRLocalMessagingHelper {
     }
 
     public Class getMainActivityClass() {
-            String packageName = mContext.getPackageName();
-            Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(packageName);
-            String className = launchIntent.getComponent().getClassName();
-            try {
-                return Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
+        String packageName = mContext.getPackageName();
+        Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(packageName);
+        String className = launchIntent.getComponent().getClassName();
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
+    }
 
     private AlarmManager getAlarmManager() {
         return (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
@@ -100,16 +102,16 @@ public class FIRLocalMessagingHelper {
 
             //priority
             String priority = bundle.getString("priority", "");
-            switch(priority) {
+            switch (priority) {
                 case "min":
                     notification.setPriority(NotificationCompat.PRIORITY_MIN);
-                break;
+                    break;
                 case "high":
                     notification.setPriority(NotificationCompat.PRIORITY_HIGH);
-                break;
+                    break;
                 case "max":
                     notification.setPriority(NotificationCompat.PRIORITY_MAX);
-                break;
+                    break;
                 default:
                     notification.setPriority(NotificationCompat.PRIORITY_DEFAULT);
             }
@@ -121,7 +123,7 @@ public class FIRLocalMessagingHelper {
 
             //large icon
             String largeIcon = bundle.getString("large-icon");
-            if(largeIcon != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            if (largeIcon != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 if (largeIcon.startsWith("http://") || largeIcon.startsWith("https://")) {
                     Bitmap bitmap = getBitmapFromURL(largeIcon);
                     notification.setLargeIcon(bitmap);
@@ -137,7 +139,7 @@ public class FIRLocalMessagingHelper {
 
             //big text
             String bigText = bundle.getString("big_text");
-            if(bigText != null){
+            if (bigText != null) {
                 notification.setStyle(new NotificationCompat.BigTextStyle().bigText(bigText));
             }
 
@@ -145,7 +147,7 @@ public class FIRLocalMessagingHelper {
             String soundName = bundle.getString("sound", "default");
             if (!soundName.equalsIgnoreCase("default")) {
                 int soundResourceId = res.getIdentifier(soundName, "raw", packageName);
-                if(soundResourceId == 0){
+                if (soundResourceId == 0) {
                     soundName = soundName.substring(0, soundName.lastIndexOf('.'));
                     soundResourceId = res.getIdentifier(soundName, "raw", packageName);
                 }
@@ -163,11 +165,11 @@ public class FIRLocalMessagingHelper {
             }
 
             //vibrate
-            if(bundle.containsKey("vibrate")){
+            if (bundle.containsKey("vibrate")) {
                 long vibrate = bundle.getLong("vibrate", Math.round(bundle.getDouble("vibrate", bundle.getInt("vibrate"))));
-                if(vibrate > 0){
+                if (vibrate > 0) {
                     notification.setVibrate(new long[]{0, vibrate});
-                }else{
+                } else {
                     notification.setVibrate(null);
                 }
             }
@@ -182,7 +184,7 @@ public class FIRLocalMessagingHelper {
             i.putExtras(bundle);
             mContext.sendOrderedBroadcast(i, null);
 
-            if(!mIsForeground || bundle.getBoolean("show_in_foreground")){
+            if (!mIsForeground || bundle.getBoolean("show_in_foreground")) {
                 Intent intent = new Intent(mContext, intentClass);
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.putExtras(bundle);
@@ -207,7 +209,7 @@ public class FIRLocalMessagingHelper {
                 }
             }
             //clear out one time scheduled notification once fired
-            if(!bundle.containsKey("repeat_interval") && bundle.containsKey("fire_date")) {
+            if (!bundle.containsKey("repeat_interval") && bundle.containsKey("fire_date")) {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.remove(bundle.getString("id"));
                 editor.apply();
@@ -224,13 +226,13 @@ public class FIRLocalMessagingHelper {
         }
 
         String notificationId = bundle.getString("id");
-        if(notificationId == null){
+        if (notificationId == null) {
             Log.e(TAG, "failed to schedule notification because id is missing");
             return;
         }
 
         long fireDate = Math.round(bundle.getDouble("fire_date"));
-        if(fireDate == 0){
+        if (fireDate == 0) {
             fireDate = Math.round(bundle.getLong("fire_date"));
         }
         if (fireDate == 0) {
@@ -244,25 +246,25 @@ public class FIRLocalMessagingHelper {
 
         Long interval = null;
         switch (bundle.getString("repeat_interval", "")) {
-          case "minute":
-              interval = (long) 60000;
-              break;
-          case "hour":
-              interval = AlarmManager.INTERVAL_HOUR;
-              break;
-          case "day":
-              interval = AlarmManager.INTERVAL_DAY;
-              break;
-          case "week":
-              interval = AlarmManager.INTERVAL_DAY * 7;
-              break;
+            case "minute":
+                interval = (long) 60000;
+                break;
+            case "hour":
+                interval = AlarmManager.INTERVAL_HOUR;
+                break;
+            case "day":
+                interval = AlarmManager.INTERVAL_DAY;
+                break;
+            case "week":
+                interval = AlarmManager.INTERVAL_DAY * 7;
+                break;
         }
 
-        if(interval != null){
+        if (interval != null) {
             getAlarmManager().setRepeating(AlarmManager.RTC_WAKEUP, fireDate, interval, pendingIntent);
-        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
-        }else {
+        } else {
             getAlarmManager().set(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
         }
 
@@ -287,19 +289,19 @@ public class FIRLocalMessagingHelper {
     public void cancelAllLocalNotifications() {
         java.util.Map<String, ?> keyMap = sharedPreferences.getAll();
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        for(java.util.Map.Entry<String, ?> entry:keyMap.entrySet()){
+        for (java.util.Map.Entry<String, ?> entry : keyMap.entrySet()) {
             cancelAlarm(entry.getKey());
         }
         editor.clear();
         editor.apply();
     }
 
-    public void removeDeliveredNotification(String notificationId){
+    public void removeDeliveredNotification(String notificationId) {
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(notificationId.hashCode());
     }
 
-    public void removeAllDeliveredNotifications(){
+    public void removeAllDeliveredNotifications() {
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
     }
@@ -310,12 +312,12 @@ public class FIRLocalMessagingHelper {
         getAlarmManager().cancel(pendingIntent);
     }
 
-    public ArrayList<Bundle> getScheduledLocalNotifications(){
+    public ArrayList<Bundle> getScheduledLocalNotifications() {
         ArrayList<Bundle> array = new ArrayList<Bundle>();
         java.util.Map<String, ?> keyMap = sharedPreferences.getAll();
-        for(java.util.Map.Entry<String, ?> entry:keyMap.entrySet()){
+        for (java.util.Map.Entry<String, ?> entry : keyMap.entrySet()) {
             try {
-                JSONObject json = new JSONObject((String)entry.getValue());
+                JSONObject json = new JSONObject((String) entry.getValue());
                 Bundle bundle = BundleJSONConverter.convertToBundle(json);
                 array.add(bundle);
             } catch (JSONException e) {
@@ -325,7 +327,7 @@ public class FIRLocalMessagingHelper {
         return array;
     }
 
-    public void setApplicationForeground(boolean foreground){
+    public void setApplicationForeground(boolean foreground) {
         mIsForeground = foreground;
     }
 
@@ -343,15 +345,21 @@ public class FIRLocalMessagingHelper {
         }
     }
 
-    public void bringToForeground()
-    {
+    public void bringToForeground() {
         Log.d("Bring to front", "bringToForeground: çalışıyor");
 
         Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage("com.aloaloortak");
-        launchIntent.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
+        launchIntent.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        KeyguardLock kgl = kgm.newKeyguardLock();
+
+        if (kgm.inKeyguardRestrictedInputMode())
+            kgl.disableKeyguard();
+
         mContext.startActivity(launchIntent);
     }
 }
