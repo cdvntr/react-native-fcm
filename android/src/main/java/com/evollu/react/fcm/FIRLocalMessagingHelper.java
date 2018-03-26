@@ -18,7 +18,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.util.Patterns;
 import android.content.SharedPreferences;
-import android.app.KeyguardManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -354,12 +353,6 @@ public class FIRLocalMessagingHelper {
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
-        KeyguardManager kgm = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
-        KeyguardManager.KeyguardLock kgl = kgm.newKeyguardLock("");
-
-        if (kgm.inKeyguardRestrictedInputMode())
-            kgl.disableKeyguard();
 
         mContext.startActivity(launchIntent);
     }
