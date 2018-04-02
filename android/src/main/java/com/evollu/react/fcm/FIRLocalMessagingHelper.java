@@ -347,8 +347,9 @@ public class FIRLocalMessagingHelper {
 
     public void bringToForeground() {
         Log.d("Bring to front", "bringToForeground: çalışıyor");
-
-        Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage("com.aloaloortak");
+        
+        String packageName = mContext.getPackageName();
+        Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(packageName);
         launchIntent.putExtra("isCall",true);
 
         mContext.startActivity(launchIntent);
