@@ -1,6 +1,7 @@
 package com.evollu.react.fcm;
 
 import java.util.Map;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,7 +72,7 @@ public class MessagingService extends FirebaseMessagingService {
         }
 
         try {
-            int badgeCount = Integer.parseInt((String)data.get("badge"));
+            int badgeCount = Integer.parseInt((String) data.get("badge"));
             badgeHelper.setBadgeCount(badgeCount);
         } catch (Exception e) {
             Log.e(TAG, "Badge count needs to be an integer", e);
@@ -80,28 +81,29 @@ public class MessagingService extends FirebaseMessagingService {
 
     public void buildLocalNotification(RemoteMessage remoteMessage) {
         if (remoteMessage.getData() == null) {
-                    return;
-                }
-                Map<String, String> data = remoteMessage.getData();
+            return;
+        }
+        Map<String, String> data = remoteMessage.getData();
 
-                String type = data.get("type");
-                if (type.equals("call") ) {
-                    FIRLocalMessagingHelper helper = new FIRLocalMessagingHelper(this.getApplication());
-                    Log.d(TAG, "buildLocalNotification: type = call");
-                    //bring to foreground
-                    helper.bringToForeground();
-                }
+        String type = data.get("type");
+        if (type != null) {
+            if (type.equals("call")) {
+                FIRLocalMessagingHelper helper = new FIRLocalMessagingHelper(this.getApplication());
+                Log.d(TAG, "buildLocalNotification: type = call");
+                //bring to foreground
+                helper.bringToForeground();
+            }
+        }
+        String customNotification = data.get("custom_notification");
 
-                String customNotification = data.get("custom_notification");
-
-                if (customNotification != null) {
-                    try {
-                        Bundle bundle = BundleJSONConverter.convertToBundle(new JSONObject(customNotification));
-                        FIRLocalMessagingHelper helper = new FIRLocalMessagingHelper(this.getApplication());
-                        helper.sendNotification(bundle);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+        if (customNotification != null) {
+            try {
+                Bundle bundle = BundleJSONConverter.convertToBundle(new JSONObject(customNotification));
+                FIRLocalMessagingHelper helper = new FIRLocalMessagingHelper(this.getApplication());
+                helper.sendNotification(bundle);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
