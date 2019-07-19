@@ -231,11 +231,11 @@ public class FIRLocalMessagingHelper {
             return;
         }
 
-        long fireDate = Math.round(bundle.getDouble("fire_date"));
-        if (fireDate == 0) {
-            fireDate = Math.round(bundle.getLong("fire_date"));
+        Long fireDate = bundle.getLong("fire_date", -1);
+        if (fireDate == -1) {
+            fireDate = (long) bundle.getDouble("fire_date", -1);
         }
-        if (fireDate == 0) {
+        if (fireDate == -1) {
             Log.e(TAG, "failed to schedule notification because fire date is missing");
             return;
         }
@@ -347,7 +347,7 @@ public class FIRLocalMessagingHelper {
 
     public void bringToForeground() {
         Log.d("Bring to front", "bringToForeground: çalışıyor");
-        
+
         String packageName = mContext.getPackageName();
         Intent launchIntent = mContext.getPackageManager().getLaunchIntentForPackage(packageName);
         launchIntent.putExtra("isCall",true);
